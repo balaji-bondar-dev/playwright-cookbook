@@ -7,7 +7,7 @@ let execEnv = { env: { ...process.env, FORCE_COLOR: "0" } };
 let testDataJSON = "tests/test-data/community-case-creation-data.json";
 
 let SiteName = "MIAW_Experiencce_Site";
-let OrgName = "devhub";
+let OrgName = "agentforce-org";
 let clearTestDataBefore = true;
 let clearTestDataAfter = true;
 

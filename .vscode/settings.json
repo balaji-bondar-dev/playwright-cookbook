@@ -6,5 +6,6 @@
     "**/.sfdx": true
   },
   "xml.preferences.showSchemaDocumentationType": "none",
-  "vibes.salesforce.defaultOrg": "salesforce-agentforce-org"
+  "vibes.salesforce.defaultOrg": "agentforce-org",
+  "salesforcedx-vscode-apex-testing.restore-previous-results": false
 }
