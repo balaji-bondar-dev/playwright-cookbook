@@ -24,7 +24,7 @@ on:
 env:
   SFDX_HIDE_RELEASE_NOTES: true
   SFDX_DATA_DIR: "/home/runner/sfdx-plugins"
-  SFDX_ORG_NAME: "tracking02"
+  SFDX_ORG_NAME: "agentforce-org"
 
 jobs:
   run-tests:

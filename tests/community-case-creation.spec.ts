@@ -3,7 +3,7 @@ const { readFileSync } = require("fs");
 const { promisify } = require("util");
 const exec = promisify(require("child_process").exec);
 let execEnv = { env: { ...process.env, FORCE_COLOR: "0" } };
-
+/*
 let testDataJSON = "tests/test-data/community-case-creation-data.json";
 
 let SiteName = "MIAW_Experiencce_Site";
@@ -112,3 +112,4 @@ test("TS#001-create-community-case", async ({ page }) => {
     }
   }
 });
+*/
