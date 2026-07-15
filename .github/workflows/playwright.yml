@@ -48,10 +48,10 @@ jobs:
       - name: Commit and Push Tracked CSV
         run: |
           # Configure git with a default runner identity
-          git config --global user.name "github-actions[bot]"
+          git config --global user.name "github-data-archival-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@://github.com"
           
           # Stage, commit, and push the newly created file
           git add archive/${{ steps.vars.outputs.year }}/
-          git commit -m "chore: archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
+          git commit -m "chore: account archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
           git push
