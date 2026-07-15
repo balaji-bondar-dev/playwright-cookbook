@@ -41,12 +41,16 @@ jobs:
           #echo "timestamp=$(date +%Y-%m-%d_%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Create Directory and Execute SOQL Query
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+          SFDX_ORG_NAME: ${{ vars.SFDX_ORG_NAME }}
         run: |
           # Ensure the year-specific directory exists (-p prevents errors if it already exists)
           mkdir -p archive/${{ steps.vars.outputs.year }}
           
           # Execute and save query directly into that path
-          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 100" --target-org ${{ vars.SFDX_ORG_NAME }} --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
+          echo SFDX_ORG_NAME
+          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 100" --target-org SFDX_ORG_NAME --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
 
       - name: Commit and Push Tracked CSV
         run: |
