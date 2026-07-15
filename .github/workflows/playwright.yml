@@ -45,8 +45,12 @@ jobs:
           echo y | sfdx plugins:install sfdx-git-delta
 
       - name: Authenticate into SF Org
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+          SFDX_ORG_NAME: ${{ vars.SFDX_ORG_NAME }}
         run: |
-          echo "${{ secrets.SF_TRACKING02_URL }}" | sf org:login:sfdx-url -a ${SFDX_ORG_NAME} --sfdx-url-stdin -s
+          echo ">> The running salesforce org is ${{ vars.SFDX_ORG_NAME }}"
+          echo "$SFDX_AUTH_URL" | sf org login sfdx-url --alias ${SFDX_ORG_NAME} --sfdx-url-stdin --set-default
           sf org:display -o ${SFDX_ORG_NAME}
 
       - name: Install dependencies
