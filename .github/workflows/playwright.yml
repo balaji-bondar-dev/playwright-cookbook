@@ -36,7 +36,7 @@ jobs:
           echo "year=$(date +'%Y')" >> $GITHUB_OUTPUT
           # Generates the full file timestamp (e.g., 2026-07-15)
           #echo "timestamp=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-          echo "timestamp=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date +%Y-%m-%d_%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Create Directory and Execute SOQL Query
         run: |
