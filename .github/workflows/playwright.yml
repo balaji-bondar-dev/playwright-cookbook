@@ -1,70 +1,140 @@
-name: Archive Salesforce Data to Tracked Folders
+name: Playwright Tests
 
 on:
+  # push:
+  #   branches: [main, master]
+  # pull_request:
+  #   branches: [main, master]
   workflow_dispatch:
 
-permissions:
-  # Gives the workflow permission to commit changes back to the repository
-  contents: write
+  #          ┌───────────── minute (0 - 59)
+  #          │ ┌───────────── hour (0 - 23)
+  #          │ │ ┌───────────── day of the month (1 - 31)
+  #          │ │ │ ┌───────────── month (1 - 12)
+  #          │ │ │ │ ┌───────────── day of the week (0 - 6)
+  #          │ │ │ │ │
+  #          │ │ │ │ │
+  #          │ │ │ │ │
+  #          * * * * *
+
+  # Uncomment the lines below if you want to schedule your job
+  # schedule:
+  #   - cron: "0 3 * * *" # every day at 3am
+
+env:
+  SFDX_HIDE_RELEASE_NOTES: true
+  SFDX_DATA_DIR: "/home/runner/sfdx-plugins"
+  SFDX_ORG_NAME: "agentforce-org"
 
 jobs:
-  run-and-archive:
+  run-tests:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '24'
 
-      - name: Install Salesforce CLI
-        run: npm install --global @salesforce/cli
-
-      - name: Authenticate to Salesforce Org
-        env:
-          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
-          SFDX_ORG_NAME: ${{ vars.SFDX_ORG_NAME }}
+      - name: Setup SF CLI
         run: |
-          echo ">> The running salesforce org is ${{ vars.SFDX_ORG_NAME }}"
-          echo "$SFDX_AUTH_URL" | sf org login sfdx-url --alias ${SFDX_ORG_NAME} --sfdx-url-stdin --set-default
+          pwd
+          mkdir -p ${SFDX_DATA_DIR} && chmod 777 ${SFDX_DATA_DIR}
+          npm install @salesforce/cli -g
+          echo y | sfdx plugins:install sfdx-git-delta
 
-      - name: Generate Dynamic Folder and Filename Variables
-        id: vars
+      - name: Authenticate into SF Org
         run: |
-          # Generates the folder year (e.g., 2026)
-          echo "year=$(date +'%Y')" >> $GITHUB_OUTPUT
-          # Generates the full file timestamp (e.g., 2026-07-15)
-          echo "timestamp=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-          #echo "timestamp=$(date +%Y-%m-%d_%H-%M-%S)" >> $GITHUB_OUTPUT
+          echo "${{ secrets.SF_TRACKING02_URL }}" | sf org:login:sfdx-url -a ${SFDX_ORG_NAME} --sfdx-url-stdin -s
+          sf org:display -o ${SFDX_ORG_NAME}
 
-      - name: Create Directory and Execute SOQL Query
-        env:
-          SFDX_ORG_NAME: ${{ vars.SFDX_ORG_NAME }}
-        run: |
-          # Ensure the year-specific directory exists (-p prevents errors if it already exists)
-          mkdir -p archive/${{ steps.vars.outputs.year }}
+      - name: Install dependencies
+        run: npm ci --force
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+
+
+
+# name: Archive Salesforce Data to Tracked Folders
+
+# on:
+#   workflow_dispatch:
+
+# permissions:
+#   # Gives the workflow permission to commit changes back to the repository
+#   contents: write
+
+# jobs:
+#   run-and-archive:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+
+#       - name: Install Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '24'
+
+#       - name: Install Salesforce CLI
+#         run: npm install --global @salesforce/cli
+
+#       - name: Authenticate to Salesforce Org
+#         env:
+#           SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+#           SFDX_ORG_NAME: ${{ vars.SFDX_ORG_NAME }}
+#         run: |
+#           echo ">> The running salesforce org is ${{ vars.SFDX_ORG_NAME }}"
+#           echo "$SFDX_AUTH_URL" | sf org login sfdx-url --alias ${SFDX_ORG_NAME} --sfdx-url-stdin --set-default
+
+#       - name: Generate Dynamic Folder and Filename Variables
+#         id: vars
+#         run: |
+#           # Generates the folder year (e.g., 2026)
+#           echo "year=$(date +'%Y')" >> $GITHUB_OUTPUT
+#           # Generates the full file timestamp (e.g., 2026-07-15)
+#           echo "timestamp=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+#           #echo "timestamp=$(date +%Y-%m-%d_%H-%M-%S)" >> $GITHUB_OUTPUT
+
+#       - name: Create Directory and Execute SOQL Query
+#         env:
+#           SFDX_ORG_NAME: ${{ vars.SFDX_ORG_NAME }}
+#         run: |
+#           # Ensure the year-specific directory exists (-p prevents errors if it already exists)
+#           mkdir -p archive/${{ steps.vars.outputs.year }}
           
-          # Execute and save query directly into that path
-          echo ">> The running salesforce org is ${{ vars.SFDX_ORG_NAME }}"
-          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 100" --target-org ${SFDX_ORG_NAME} --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
+#           # Execute and save query directly into that path
+#           echo ">> The running salesforce org is ${{ vars.SFDX_ORG_NAME }}"
+#           sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 100" --target-org ${SFDX_ORG_NAME} --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
 
-      - name: Commit and Push Tracked CSV
-        run: |
-          # Configure git with a default runner identity
-          git config --global user.name "github-data-archival-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@://github.com"
+#       - name: Commit and Push Tracked CSV
+#         run: |
+#           # Configure git with a default runner identity
+#           git config --global user.name "github-data-archival-actions[bot]"
+#           git config --global user.email "41898282+github-actions[bot]@://github.com"
           
-          # Stage, commit, and push the newly created file
-          git add archive/${{ steps.vars.outputs.year }}/
-          #git commit -m "chore: account archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
-          #git push --force
-          # Only commit if the file actually changed to prevent workflow errors
-          if ! git diff --cached --quiet; then
-            git commit -m "automation: overwrite my_file.csv with fresh data"
-            git push
-          else
-            echo "No changes detected in CSV file."
-          fi
+#           # Stage, commit, and push the newly created file
+#           git add archive/${{ steps.vars.outputs.year }}/
+#           #git commit -m "chore: account archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
+#           #git push --force
+#           # Only commit if the file actually changed to prevent workflow errors
+#           if ! git diff --cached --quiet; then
+#             git commit -m "automation: overwrite my_file.csv with fresh data"
+#             git push
+#           else
+#             echo "No changes detected in CSV file."
+#           fi
