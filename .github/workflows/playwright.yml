@@ -26,8 +26,10 @@ jobs:
       - name: Authenticate to Salesforce Org
         env:
           SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+          SFDX_ORG_NAME: ${{ vars.SFDX_ORG_NAME }}
         run: |
-          echo "$SFDX_AUTH_URL" | sf org login sfdx-url --alias ${{ vars.SFDX_ORG_NAME }} --sfdx-url-stdin --set-default
+          echo "The database host is ${{ vars.SFDX_ORG_NAME }}"
+          echo "$SFDX_AUTH_URL" | sf org login sfdx-url --alias SFDX_ORG_NAME --sfdx-url-stdin --set-default
 
       - name: Generate Dynamic Folder and Filename Variables
         id: vars
