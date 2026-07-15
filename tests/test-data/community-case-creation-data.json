@@ -1,5 +1,5 @@
 {
-  "subject": "Test Subject",
-  "description": "Test Description",
-  "webEmail": "TestName@email.com"
+  "Subject": "Test Subject",
+  "Description": "Test Description",
+  "WebEmail": "TestName@email.com"
 }

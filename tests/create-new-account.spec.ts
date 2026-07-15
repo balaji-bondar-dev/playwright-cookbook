@@ -63,7 +63,6 @@ test("TS#001-create-new-account", async ({ page }) => {
     .fill(testDataObj.Name);
   await page.getByRole("button", { name: "Save", exact: true }).click();
 
-  // Assert result
   await page.waitForURL("**/view");
   await page.waitForSelector("records-highlights2");
   await expect(page.locator("records-highlights2")).toContainText(
