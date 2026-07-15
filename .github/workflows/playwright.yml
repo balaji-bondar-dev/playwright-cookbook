@@ -54,4 +54,4 @@ jobs:
           # Stage, commit, and push the newly created file
           git add archive/${{ steps.vars.outputs.year }}/
           git commit -m "chore: account archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
-          git push
+          git push --force
