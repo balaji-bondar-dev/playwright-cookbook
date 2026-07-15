@@ -18,7 +18,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli
@@ -36,22 +36,3 @@ jobs:
           echo "year=$(date +'%Y')" >> $GITHUB_OUTPUT
           # Generates the full file timestamp (e.g., 2026-07-15)
           echo "timestamp=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-
-      - name: Create Directory and Execute SOQL Query
-        run: |
-          # Ensure the year-specific directory exists (-p prevents errors if it already exists)
-          mkdir -p archive/${{ steps.vars.outputs.year }}
-          
-          # Execute and save query directly into that path
-          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 10" --target-org balajibondar@gmail.com.agentforce  --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
-
-      - name: Commit and Push Tracked CSV
-        run: |
-          # Configure git with a default runner identity
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@://github.com"
-          
-          # Stage, commit, and push the newly created file
-          git add archive/${{ steps.vars.outputs.year }}/
-          git commit -m "chore: archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
-          git push
