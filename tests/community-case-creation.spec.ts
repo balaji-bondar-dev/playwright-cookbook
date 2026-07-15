@@ -35,23 +35,30 @@ test("TS#001-create-community-case", async ({ page }) => {
     }
   }
 
-  // Get SF Site URL
+  // Get SF Site Id
   let sfOutput = await exec(
-    "sf data:query --json -q \"SELECT Id, GuestUserId FROM Site WHERE Name = '" +
+    "sf data:query -o " +
+      OrgName +
+      " --json -q \"SELECT Id, GuestUserId FROM Site WHERE Name = '" +
       SiteName +
       "'\"",
     execEnv
   );
+
   var jsonObj = JSON.parse(sfOutput.stdout.trim());
   let SF_SITE_ID = jsonObj.result.records[0].Id;
   console.log(">> SF_SITE_ID " + SF_SITE_ID);
 
+  // Get SF Site URL
   sfOutput = await exec(
-    "sf data:query --json -q \"SELECT SecureURL FROM SiteDetail WHERE DurableId = '" +
+    "sf data:query -o " +
+      OrgName +
+      " --json -q \"SELECT SecureURL FROM SiteDetail WHERE DurableId = '" +
       SF_SITE_ID +
       "'\"",
     execEnv
   );
+
   jsonObj = JSON.parse(sfOutput.stdout.trim());
   let SF_SITE_URL = jsonObj.result.records[0].SecureUrl;
   console.log(">> SF_SITE_URL " + SF_SITE_URL);
