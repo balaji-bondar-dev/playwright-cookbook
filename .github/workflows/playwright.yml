@@ -27,4 +27,6 @@ jobs:
 
       - name: Execute SOQL Query
         run: |
-          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 10" --result-format csv
+          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 10" --target-org agentforce-org --result-format csv
+
+
