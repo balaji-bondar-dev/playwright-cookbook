@@ -21,7 +21,7 @@ jobs:
 
       - name: Authenticate to Salesforce Org
         env:
-          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+          SFDX_AUTH_URL: ${{ secrets.SFDX_ORG_URL }}
         run: |
           echo "$SFDX_ORG_URL" | sf org login sfdx-url --sfdx-url-stdin --set-default
 
