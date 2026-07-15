@@ -15,17 +15,22 @@ test("TS#001-create-new-account", async ({ page }) => {
 
   //Load Test Data
   let testData = readFileSync(testDataJSON);
+  //console.log(">> testData: " + testData);
+
   var testDataObj = JSON.parse(testData);
+  //console.log(">> testDataObj: " + testDataObj);
 
   // clear test data before
   if (clearTestDataBefore) {
     try {
       console.log(">> Clearing test data before...");
+      //console.log(">> testDataObj.Name: " + testDataObj.Name);
+
       let sfOutput = await exec(
         "sf data:delete:record -o " +
           OrgName +
           " --json -s Account --where \"Name='" +
-          testDataObj.name +
+          testDataObj.Name +
           "'\"",
         execEnv
       );
@@ -81,8 +86,10 @@ test("TS#001-create-new-account", async ({ page }) => {
     try {
       console.log(">> Clearing test data after...");
       let sfOutput = await exec(
-        "sf data:delete:record --json -s Account --where \"Name='" +
-          testDataObj.Name +
+        "sf data:delete:record -o " +
+          OrgName +
+          " --json -s Account --where \"Id='" +
+          AccountId +
           "'\"",
         execEnv
       );
