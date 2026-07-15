@@ -14,16 +14,16 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-node-version: '20'
+          node-node-version: '24'
 
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli
 
       - name: Authenticate to Salesforce Org
         env:
-          SFDX_AUTH_URL: ${{ secrets.SFDX_ORG_URL }}
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
         run: |
-          echo "$SFDX_ORG_URL" | sf org login sfdx-url --sfdx-url-stdin --set-default
+          echo "$SFDX_AUTH_URL" | sf org login sfdx-url --sfdx-url-stdin --set-default
 
       - name: Execute SOQL Query
         run: |
