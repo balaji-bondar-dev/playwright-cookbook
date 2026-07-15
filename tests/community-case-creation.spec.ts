@@ -16,18 +16,26 @@ test("TS#001-create-community-case", async ({ page }) => {
 
   //Load Test Data
   let testData = readFileSync(testDataJSON);
+  console.log(">> testData: " + testData);
+
   var testDataObj = JSON.parse(testData);
+  console.log(">> testDataObj: " + testDataObj);
 
   // clear test data before
   if (clearTestDataBefore) {
     try {
       console.log(">> Clearing test data before.");
+      console.log(">> testDataObj.Subject: " + testDataObj.Subject);
+
       let sfOutput = await exec(
-        "sf data:delete:record --json -s Case --where \"Subject='" +
+        "sf data:delete:record -o " +
+          OrgName +
+          " --json -s Case --where \"Subject='" +
           testDataObj.Subject +
           "'\"",
         execEnv
       );
+
       var jsonObj = JSON.parse(sfOutput.stdout.trim());
       console.log(">> Before clear data status: " + jsonObj.result.success);
     } catch (error) {
@@ -110,9 +118,9 @@ test("TS#001-create-community-case", async ({ page }) => {
     try {
       console.log(">> Clearing test data After.");
       let sfOutput = await exec(
-        "sf data:delete:record " +
+        "sf data:delete:record -o " +
           OrgName +
-          "--json -s Case --where \"subject='" +
+          " --json -s Case --where \"Subject='" +
           testDataObj.Subject +
           "'\"",
         execEnv
