@@ -73,7 +73,7 @@ test("TS#001-create-new-account", async ({ page }) => {
   // Get record Id from URL
   let url = new URL(page.url());
   let path_split = url.pathname.split("/");
-  console.log(">> path_split " + path_split);
+  //console.log(">> path_split " + path_split);
 
   // Assert URL
   expect(path_split[3]).toBe("Account");
@@ -101,5 +101,5 @@ test("TS#001-create-new-account", async ({ page }) => {
   }
 
   // ** Test has passed!
-  console.log(">> " + test.info().title + ": Test Passed!");
+  //console.log(">> " + test.info().title + ": Test Passed!");
 });
