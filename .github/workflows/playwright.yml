@@ -27,7 +27,7 @@ jobs:
         env:
           SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
         run: |
-          echo "$SFDX_AUTH_URL" | sf org login sfdx-url --sfdx-url-stdin --set-default
+          echo "$SFDX_AUTH_URL" | sf org login sfdx-url --alias agentforce-org --sfdx-url-stdin --set-default
 
       - name: Generate Dynamic Folder and Filename Variables
         id: vars
@@ -43,7 +43,7 @@ jobs:
           mkdir -p archive/${{ steps.vars.outputs.year }}
           
           # Execute and save query directly into that path
-          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 100" --target-org balajibondar@gmail.com.agentforce  --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
+          sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 100" --target-org {SFDX_ORG_NAME} --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
 
       - name: Commit and Push Tracked CSV
         run: |
