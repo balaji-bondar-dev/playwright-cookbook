@@ -22,8 +22,10 @@ test("TS#001-create-new-account", async ({ page }) => {
     try {
       console.log(">> Clearing test data before...");
       let sfOutput = await exec(
-        "sf data:delete:record --json -s Account --where \"Name='" +
-          testDataObj.Name +
+        "sf data:delete:record -o " +
+          OrgName +
+          " --json -s Account --where \"Name='" +
+          testDataObj.name +
           "'\"",
         execEnv
       );
