@@ -89,7 +89,9 @@ test("TS#001-create-community-case", async ({ page }) => {
 
   // Query SF and get case subject.
   sfOutput = await exec(
-    "sf data:query --json -q \"SELECT Id,Subject FROM Case WHERE subject='" +
+    "sf data:query -o " +
+      OrgName +
+      " --json -q \"SELECT Id,Subject FROM Case WHERE subject='" +
       testDataObj.Subject +
       "' ORDER BY CreatedDate DESC LIMIT 1\"",
     execEnv
@@ -108,7 +110,9 @@ test("TS#001-create-community-case", async ({ page }) => {
     try {
       console.log(">> Clearing test data After.");
       let sfOutput = await exec(
-        "sf data:delete:record --json -s Case --where \"subject='" +
+        "sf data:delete:record " +
+          OrgName +
+          "--json -s Case --where \"subject='" +
           testDataObj.Subject +
           "'\"",
         execEnv
