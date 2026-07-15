@@ -82,7 +82,7 @@ test("TS#001-create-community-case", async ({ page }) => {
 
   // Query SF and get case subject.
   sfOutput = await exec(
-    "sf data:query --json -q \"SELECT Id,Subject FROM Case WHERE Subject='" +
+    "sf data:query --json -q \"SELECT Id,Subject FROM Case WHERE subject='" +
       testDataObj.Subject +
       "' ORDER BY CreatedDate DESC LIMIT 1\"",
     execEnv
