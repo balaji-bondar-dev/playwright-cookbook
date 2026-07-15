@@ -49,7 +49,7 @@ jobs:
           mkdir -p archive/${{ steps.vars.outputs.year }}
           
           # Execute and save query directly into that path
-          echo SFDX_ORG_NAME
+          echo $SFDX_ORG_NAME
           sf data query --query "SELECT Id, Name, Industry FROM Account LIMIT 100" --o $SFDX_ORG_NAME --result-format csv > archive/${{ steps.vars.outputs.year }}/accounts_export_${{ steps.vars.outputs.timestamp }}.csv
 
       - name: Commit and Push Tracked CSV
