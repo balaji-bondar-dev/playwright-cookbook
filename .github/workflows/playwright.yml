@@ -35,8 +35,8 @@ jobs:
           # Generates the folder year (e.g., 2026)
           echo "year=$(date +'%Y')" >> $GITHUB_OUTPUT
           # Generates the full file timestamp (e.g., 2026-07-15)
-          #echo "timestamp=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-          echo "timestamp=$(date +%Y-%m-%d_%H-%M-%S)" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          #echo "timestamp=$(date +%Y-%m-%d_%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Create Directory and Execute SOQL Query
         run: |
@@ -54,5 +54,12 @@ jobs:
           
           # Stage, commit, and push the newly created file
           git add archive/${{ steps.vars.outputs.year }}/
-          git commit -m "chore: account archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
-          git push --force
+          #git commit -m "chore: account archive salesforce export for ${{ steps.vars.outputs.timestamp }} [skip ci]"
+          #git push --force
+          # Only commit if the file actually changed to prevent workflow errors
+          if ! git diff --cached --quiet; then
+            git commit -m "automation: overwrite my_file.csv with fresh data"
+            git push
+          else
+            echo "No changes detected in CSV file."
+          fi
