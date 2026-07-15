@@ -82,14 +82,14 @@ test("TS#001-create-community-case", async ({ page }) => {
 
   // Query SF and get case subject.
   sfOutput = await exec(
-    "sf data:query --json -q \"SELECT Id,Subject FROM Case WHERE subject='" +
+    "sf data:query --json -q \"SELECT Id,Subject FROM Case WHERE Subject='" +
       testDataObj.Subject +
       "' ORDER BY CreatedDate DESC LIMIT 1\"",
     execEnv
   );
 
   jsonObj = JSON.parse(sfOutput.stdout.trim());
-  console.log(">> jsonObj.result.records[0]: " + jsonObj.result.records[0]);
+  //console.log(">> jsonObj.result.records[0]: " + jsonObj.result.records[0]);
   let CaseSubject = jsonObj.result.records[0].Subject;
   console.log(">> Case subject is: " + CaseSubject);
 
