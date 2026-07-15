@@ -3,10 +3,11 @@ const { readFileSync } = require("fs");
 const { promisify } = require("util");
 const exec = promisify(require("child_process").exec);
 let execEnv = { env: { ...process.env, FORCE_COLOR: "0" } };
+import "dotenv/config";
 
 let testDataJSON = "tests/test-data/create-new-account-data.json";
 
-let OrgName = "agentforce-org";
+//let OrgName = "agentforce-org";
 let clearTestDataBefore = true;
 let clearTestDataAfter = true;
 
@@ -28,7 +29,7 @@ test("TS#001-create-new-account", async ({ page }) => {
 
       let sfOutput = await exec(
         "sf data:delete:record -o " +
-          OrgName +
+          process.env.SFDX_ORG_NAME +
           " --json -s Account --where \"Name='" +
           testDataObj.Name +
           "'\"",
@@ -44,7 +45,7 @@ test("TS#001-create-new-account", async ({ page }) => {
   // Get SF pre-authenticated URL
   let sfOutput = await exec(
     "sf org:open -o " +
-      OrgName +
+      process.env.SFDX_ORG_NAME +
       " --path /lightning/page/home --url-only --json",
     execEnv
   );
@@ -86,7 +87,7 @@ test("TS#001-create-new-account", async ({ page }) => {
       console.log(">> Clearing test data after...");
       let sfOutput = await exec(
         "sf data:delete:record -o " +
-          OrgName +
+          process.env.SFDX_ORG_NAME +
           " --json -s Account --where \"Id='" +
           AccountId +
           "'\"",

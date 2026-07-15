@@ -42,5 +42,8 @@
     "**/lwc/**": [
       "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
     ]
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }

@@ -3,11 +3,12 @@ const { readFileSync } = require("fs");
 const { promisify } = require("util");
 const exec = promisify(require("child_process").exec);
 let execEnv = { env: { ...process.env, FORCE_COLOR: "0" } };
+import "dotenv/config";
 
 let testDataJSON = "tests/test-data/community-case-creation-data.json";
 
 let SiteName = "MIAW_Experiencce_Site";
-let OrgName = "agentforce-org";
+//let OrgName = "agentforce-org";
 let clearTestDataBefore = true;
 let clearTestDataAfter = true;
 
@@ -29,7 +30,7 @@ test("TS#001-create-community-case", async ({ page }) => {
 
       let sfOutput = await exec(
         "sf data:delete:record -o " +
-          OrgName +
+          process.env.SFDX_ORG_NAME +
           " --json -s Case --where \"Subject='" +
           testDataObj.Subject +
           "'\"",
@@ -46,7 +47,7 @@ test("TS#001-create-community-case", async ({ page }) => {
   // Get SF Site Id
   let sfOutput = await exec(
     "sf data:query -o " +
-      OrgName +
+      process.env.SFDX_ORG_NAME +
       " --json -q \"SELECT Id, GuestUserId FROM Site WHERE Name = '" +
       SiteName +
       "'\"",
@@ -60,7 +61,7 @@ test("TS#001-create-community-case", async ({ page }) => {
   // Get SF Site URL
   sfOutput = await exec(
     "sf data:query -o " +
-      OrgName +
+      process.env.SFDX_ORG_NAME +
       " --json -q \"SELECT SecureURL FROM SiteDetail WHERE DurableId = '" +
       SF_SITE_ID +
       "'\"",
@@ -98,7 +99,7 @@ test("TS#001-create-community-case", async ({ page }) => {
   // Query SF and get case subject.
   sfOutput = await exec(
     "sf data:query -o " +
-      OrgName +
+      process.env.SFDX_ORG_NAME +
       " --json -q \"SELECT Id,Subject FROM Case WHERE subject='" +
       testDataObj.Subject +
       "' ORDER BY CreatedDate DESC LIMIT 1\"",
@@ -119,7 +120,7 @@ test("TS#001-create-community-case", async ({ page }) => {
       console.log(">> Clearing test data After.");
       let sfOutput = await exec(
         "sf data:delete:record -o " +
-          OrgName +
+          process.env.SFDX_ORG_NAME +
           " --json -s Case --where \"Subject='" +
           testDataObj.Subject +
           "'\"",
