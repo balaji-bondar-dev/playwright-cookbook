@@ -107,7 +107,7 @@ test("TS#001-create-community-case", async ({ page }) => {
   );
 
   jsonObj = JSON.parse(sfOutput.stdout.trim());
-  //console.log(">> jsonObj.result.records[0]: " + jsonObj.result.records[0]);
+  console.log(">> jsonObj.result.records[0]: " + jsonObj.result.records[0]);
   let CaseSubject = jsonObj.result.records[0].Subject;
   console.log(">> Case subject is: " + CaseSubject);
 
